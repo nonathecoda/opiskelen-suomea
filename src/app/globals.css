@@ -1,0 +1,851 @@
+@import "tailwindcss";
+
+:root {
+  /* One theme, the dark one: a page read at night. Nothing here follows the system's light mode. */
+  color-scheme: dark;
+  /* Paper and ink. The paper is the one the launch screens are printed on (scripts/brand-assets.mjs). */
+  --bg: #151412;
+  /* Raised a step: fields, buttons, the bars at the foot of a screen. */
+  --surface: #201e1b;
+  /* Warm white, 16:1 on the paper. Pure white would glare on it. */
+  --ink: #f5f1e8;
+  /* Secondary text: 8.7:1 on the paper, 7.9:1 on the raised surface. It never stands on a filled line. */
+  --muted: #b9b2a4;
+  /* Three weights of line. --line parts one row from the next, --edge draws a control that
+     can be tapped (3.9:1 on the paper, 3.5:1 on the surface), --rule opens a section. */
+  --line: #37332c;
+  --edge: #7a7365;
+  --rule: #9a9384;
+  /* The one yellow: the icon's own (Mark.tsx, brand/). The next thing to do, the current tab,
+     progress. 14:1 on the paper, and brand black is 14:1 on it. */
+  --accent: #ffe000;
+  --accent-press: #e6ca00;
+  --accent-ink: #111111;
+  /* The highlighter. On a dark page it cannot be a wash under light letters, which would dim
+     them: it is the yellow itself, with the letters in black on it. */
+  --mark: var(--accent);
+  --mark-ink: var(--accent-ink);
+  /* The text cursor: the highlighter again. */
+  --caret: var(--accent);
+  /* Right and wrong. Each is bright enough to be read as text on the paper (7:1 and more)
+     and to carry black text as a band (8:1 and more), so there is one green and one red. */
+  --good: #49de78;
+  --bad: #ff8b75;
+  /* Tag colours: kept for the profile's marker, a class of words worth telling apart by colour,
+     and thrown by the confetti. Blue, pink and blue-green, each
+     7.6:1 or more even on the raised surface, and set as far from each other, from the yellow
+     and from the green and red of a verdict as three such colours can be. */
+  --tag-1: #8daffe;
+  --tag-2: #fe8acf;
+  --tag-3: #4ae6d6;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-edge: var(--edge);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+  --color-accent-press: var(--accent-press);
+  --color-accent-ink: var(--accent-ink);
+  --color-good: var(--good);
+  --color-bad: var(--bad);
+  --color-tag-1: var(--tag-1);
+  --color-tag-2: var(--tag-2);
+  --color-tag-3: var(--tag-3);
+  --font-sans: var(--font-ui), system-ui, sans-serif;
+  --font-serif: var(--font-word), Georgia, serif;
+}
+
+/* Native feel on phones: no tap flash, no pull-to-refresh, no rubber-band reload. */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  overscroll-behavior: none;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-text-size-adjust: 100%;
+}
+
+button,
+a,
+[role="button"],
+summary {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* In the base layer so that utility classes on an element can still override these. */
+@layer base {
+  /*
+   * The screen is never enlarged, as an app's is not: one finger scrolls, two do not zoom, and
+   * a double tap does not either (so no tap waits to see whether a second one follows). Said on
+   * every element, because Safari forgets what an ancestor said at each thing that scrolls.
+   * A photo is enlarged inside its own frame instead (BookPages.tsx).
+   */
+  * {
+    touch-action: pan-x pan-y;
+  }
+
+  /* iOS zooms into any field under 16px and never zooms back out. */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  /* The parts the browser draws carry the same ink and the same yellow. */
+  :root {
+    accent-color: var(--accent);
+    scrollbar-color: var(--edge) transparent;
+  }
+
+  ::selection {
+    background: var(--mark);
+    color: var(--mark-ink);
+  }
+
+  input,
+  textarea {
+    caret-color: var(--caret);
+  }
+}
+
+/* A text link: ink with a firm underline, so it reads as something to tap. */
+@utility link {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--edge);
+}
+
+/* The highlighter over a few letters: the answer in a gap, the ending a word takes, the right answer after a miss. */
+@utility hl {
+  background: var(--mark);
+  color: var(--mark-ink);
+  border-radius: 3px;
+  /* A little more on the right: the serif's f and r reach past their own width. */
+  padding-inline: 0.12em 0.18em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* The same stroke drawn under the letters, where they must keep a colour of their own: a marker. */
+@utility hl-under {
+  text-decoration-line: underline;
+  text-decoration-color: var(--mark);
+  text-decoration-thickness: 0.13em;
+  text-underline-offset: 0.16em;
+  text-decoration-skip-ink: none;
+}
+
+/* Half highlighted: what is being learnt but is not yet known. Told apart by pattern, not by hue alone. */
+@utility hatch {
+  background-image: repeating-linear-gradient(-45deg, var(--accent) 0 2px, transparent 2px 5px);
+}
+
+/*
+ * The app owns the whole visible screen; each view scrolls inside it. Height and
+ * offset follow the visual viewport (see ViewportSync), so the bottom of a screen
+ * stays above the on-screen keyboard.
+ */
+.app-shell {
+  position: fixed;
+  top: var(--app-top, 0px);
+  left: 0;
+  right: 0;
+  height: 100vh;
+  height: var(--app-height, 100dvh);
+  display: flex;
+  flex-direction: column;
+  max-width: 34rem;
+  margin: 0 auto;
+}
+
+.pad-top {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+.pad-bottom {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+/* With the keyboard up there is no home indicator to keep clear of. */
+.keyboard .pad-bottom {
+  padding-bottom: 0.5rem;
+}
+
+/*
+ * Up and down, and never sideways. A box told to scroll one way scrolls the other way too the
+ * moment anything in it reaches past its edge, and a card on its way in from the right does
+ * (onward): Safari then let the whole screen be pushed aside. What is meant to scroll sideways
+ * inside one of these (a wide table, an enlarged photo) is a box of its own and still does.
+ */
+.scroll-y {
+  overflow-x: hidden;
+  overflow-y: auto;
+  touch-action: pan-y;
+  scrollbar-width: thin;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* The mascot's face (Mark.tsx) when it is content: both eyes shut to a line. Each eye scales about its own middle. */
+.mark[data-eyes="closed"] .mark-eye {
+  transform: scaleY(0.2);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════════════
+   Motion
+
+   One clock and one set of curves for everything that moves. What arrives slows into its
+   place; what leaves is quicker and gets out of the way; what answers a finger is over
+   before the finger lifts. Nothing waits for an animation: the new state is always there
+   already, taking taps, and the motion is laid over it.
+
+   Each kind of change has one way of showing, so that the way itself says what happened:
+
+     what comes, travels      a screen or the next card from the right, a verdict from below,
+                              a sheet from the foot of the screen (transform)
+     what is shown, settles   an answer under its question, a rule under its heading (opacity,
+                              and a few pixels from the thing it belongs to)
+     what is marked, is drawn a tick, the highlighter, the fill of a bar: a cut moves across
+                              something already laid out (clip-path)
+     what is pressed, gives   at once, and eases back
+
+   Transform, opacity and clip-path do it, so nothing is laid out again and a busy phone
+   keeps time (the one exception, the highlighter's yellow, says why; it lays nothing out
+   either). There are two pieces of theatre: the splash, and the small moment when a round
+   is over and its result comes in. Everything else stays quiet.
+   ══════════════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* How long. */
+  --dur-fast: 140ms; /* an answer to the finger: a press, a tick, a change of tab */
+  --dur-exit: 180ms; /* leaving */
+  --dur-enter: 260ms; /* arriving */
+  --dur-slow: 340ms; /* a whole gesture, there to be seen: the hop and the shake of an answer */
+  /* Not for coming or going. A line drawn by hand, timed to be seen as drawn and not waited for;
+     the splash's blink has always taken as long (half of --splash-hold). */
+  --dur-stroke: 200ms; /* one stroke: the highlighter over a word, the blink of an eye */
+  /* Along what curve. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* arrives fast, settles gently */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1); /* leaves without lingering */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1); /* goes from one place on screen to another */
+  /* How far a screen travels as it comes. */
+  --shift: 24px;
+  /* Tailwind's `transition-*` and `ease-*` utilities keep the same time. */
+  --default-transition-duration: var(--dur-fast);
+  --default-transition-timing-function: var(--ease-out);
+}
+
+/*
+ * The splash (Splash.tsx): the first thing painted, before any script has run. The icon's
+ * face is on the paper, exactly where the phone's own launch screen showed it (public/splash),
+ * so the two are one picture. It blinks once; then the cover opens along the line of its eyes,
+ * the way they just did, and the app is behind it.
+ *
+ * From the first paint: 0 the face is there, 200 to 400 it blinks, and then the cover opens in
+ * 300. "Then" is 400 when the app is ready by that time, because Splash.tsx winds the clock
+ * forward. It is --splash-leave at the very latest, script or no script, so the cover can
+ * never stay. Everything that belongs to its going is named splash-out-*.
+ */
+.splash {
+  --splash-size: 6rem;
+  /* Splash.tsx reads these two. */
+  --splash-hold: 400ms;
+  --splash-leave: 1400ms;
+  --splash-open: 300ms;
+  /* The line of the eyes, where the cover parts: they sit 134 of 512 down the icon (Mark.tsx). */
+  --splash-seam: calc(50% - var(--splash-size) * 0.2387);
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  /* It is only ever looked at. A tap goes to the app, even one that comes early. */
+  pointer-events: none;
+  animation: splash-out-end 0s linear calc(var(--splash-leave) + var(--splash-open)) forwards;
+}
+
+.splash-lid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: var(--bg);
+  animation: splash-out-lid var(--splash-open) cubic-bezier(0.45, 0, 0.15, 1) var(--splash-leave) forwards;
+}
+
+.splash-lid-upper {
+  --to: -100%;
+  top: 0;
+  /* A pixel of overlap, so no line of the app shows between the two. */
+  height: calc(var(--splash-seam) + 1px);
+}
+
+.splash-lid-lower {
+  --to: 100%;
+  top: var(--splash-seam);
+  bottom: 0;
+}
+
+.splash-mark {
+  position: relative;
+  width: var(--splash-size);
+  height: var(--splash-size);
+  animation: splash-out-mark var(--dur-fast) var(--ease-in) var(--splash-leave) forwards;
+}
+
+.splash-mark svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* A layer of their own: an eye that closes is then a matter for the graphics chip alone. */
+.splash-eyes {
+  transform-origin: 50% 26.13%;
+  animation: splash-blink calc(var(--splash-hold) / 2) linear calc(var(--splash-hold) / 2);
+}
+
+/* Shut quickly, open a little more slowly, as an eye does. */
+@keyframes splash-blink {
+  from {
+    transform: scaleY(1);
+    animation-timing-function: var(--ease-in);
+  }
+  40% {
+    transform: scaleY(0.08);
+    animation-timing-function: var(--ease-out);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes splash-out-lid {
+  to {
+    transform: translateY(var(--to));
+  }
+}
+
+@keyframes splash-out-mark {
+  to {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes splash-out-fade {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Gone: not drawn, not in the way of a tap, not there for a screen reader. */
+@keyframes splash-out-end {
+  to {
+    visibility: hidden;
+  }
+}
+
+/*
+ * From screen to screen (motion.ts). The new screen is in place at once. A still of the old
+ * one lies on top of it, on paper of its own, and clears like breath off a window.
+ *
+ *   deeper    the old screen draws away to the left, the new one comes in from the right
+ *   back      the same, the other way
+ *   sideways  another tab: the one clears into the other, and nothing travels
+ *
+ * The two screens are one movement, so they ride one curve, side by side like two frames of
+ * a film. That curve does most of its work at once: the old screen is nearly gone within
+ * three frames, so two pages of words are never read through each other, and what is left
+ * to watch is the new screen coming to rest.
+ */
+.ghost {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  background: var(--bg);
+  pointer-events: none;
+  animation: ghost-clear var(--dur-exit) var(--ease-out) forwards;
+}
+
+.ghost[data-nav="tab"] {
+  animation-duration: var(--dur-fast);
+}
+
+/* A still does not move by itself: whatever was mid-flight in the old screen is shown landed. */
+.ghost * {
+  animation: none !important;
+  transition: none !important;
+}
+
+.ghost[data-nav="open"] > *,
+.ghost[data-nav="close"] > * {
+  --to: calc(var(--shift) * -1);
+  animation: ghost-recede var(--dur-enter) var(--ease-out) forwards !important;
+}
+
+.ghost[data-nav="close"] > * {
+  --to: var(--shift);
+}
+
+#stage[data-nav="open"] > .app-shell,
+#stage[data-nav="close"] > .app-shell {
+  --from: var(--shift);
+  animation: screen-in var(--dur-enter) var(--ease-out);
+}
+
+#stage[data-nav="close"] > .app-shell {
+  --from: calc(var(--shift) * -1);
+}
+
+@keyframes ghost-clear {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes ghost-recede {
+  to {
+    transform: translateX(var(--to));
+  }
+}
+
+@keyframes screen-in {
+  from {
+    transform: translateX(var(--from));
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/*
+ * A press, and there is one. Down at once: while the finger is on it nothing eases. Let go,
+ * it comes back in --dur-fast, and so does a colour the tap changed (a choice judged, a chip
+ * switched on). A button sinks a little under the finger (press). A row of a list or a word
+ * in a line of text is too wide or too slight to sink, and dims instead (press-dim).
+ *
+ * The sinking is `scale`, not `transform`: it is then its own, and the hop of a right answer
+ * starts from wherever the press had got to.
+ */
+@utility press {
+  transition-property: scale, background-color, border-color, color;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-out);
+
+  &:active:not(:disabled) {
+    scale: 0.97;
+    transition-duration: 0s;
+  }
+}
+
+@utility press-dim {
+  transition: opacity var(--dur-fast) var(--ease-out);
+
+  &:active:not(:disabled) {
+    opacity: 0.6;
+    transition-duration: 0s;
+  }
+}
+
+/*
+ * What comes next on a screen that stays comes as a screen does, from the right: the next
+ * card, the next question, the install guide over the app. A step that leads back (an answer
+ * taken back) comes from the left. Only what is read moves; what is tapped is in place from
+ * the first frame.
+ */
+.onward {
+  --from: var(--shift);
+  animation:
+    screen-in var(--dur-enter) var(--ease-out),
+    fade-in var(--dur-exit) var(--ease-out);
+}
+
+.onward[data-way="back"] {
+  --from: calc(var(--shift) * -1);
+}
+
+/*
+ * A sheet (Sheet.tsx) rises from the foot of the screen, and the screen behind it darkens.
+ * The veil is a layer of its own, so each of the two is a matter for the graphics chip alone.
+ * Closed, the sheet is gone that instant: the screen under it takes taps and the focus is
+ * back where it was. What is seen falling is a still (motion.ts), quicker than it rose, and
+ * from wherever it had got to if it was closed on its way up.
+ */
+.sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 0.65);
+  animation: fade-in var(--dur-enter) var(--ease-out);
+}
+
+.sheet-panel {
+  position: relative;
+  animation: sheet-rise var(--dur-enter) var(--ease-out);
+}
+
+.sheet-ghost {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+}
+
+.sheet-ghost * {
+  animation: none !important;
+  transition: none !important;
+}
+
+.sheet-ghost .sheet::before {
+  animation: sheet-clear var(--dur-exit) var(--ease-in) forwards;
+}
+
+.sheet-ghost .sheet-panel {
+  animation: sheet-fall var(--dur-exit) var(--ease-in) forwards !important;
+}
+
+@keyframes sheet-rise {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes sheet-fall {
+  from {
+    transform: translateY(var(--at, 0px));
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes sheet-clear {
+  from {
+    opacity: var(--veil, 1);
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Something the app has to say, on a screen that stays: it comes up into its place. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.rise {
+  animation: rise var(--dur-enter) var(--ease-out);
+}
+
+/*
+ * Something the learner asked to see, which was under what is above it all along: the answer
+ * under its question, the next hint, a rule under its heading. It comes out from there. The
+ * heading does not move, and neither does anything below: what opens is in its full height
+ * at once.
+ */
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.settle,
+details[open] > summary ~ * {
+  animation: settle var(--dur-enter) var(--ease-out);
+}
+
+/*
+ * In one place, one thing clears as another comes through: a covered word that is peeked at,
+ * the steps for another browser. What clears lies on top and takes no taps.
+ */
+.cross-in {
+  animation: fade-in var(--dur-fast) var(--ease-out);
+}
+
+.cross-out {
+  opacity: 0;
+  pointer-events: none;
+  animation: cross-out var(--dur-fast) var(--ease-out);
+}
+
+@keyframes cross-out {
+  from {
+    opacity: 1;
+  }
+}
+
+/*
+ * Drawn from the left, as the hand draws: a cut moves across something that is already in its
+ * place, so no letter and no line is laid out again. It reaches a little past the box, where
+ * an underline does. For a thing that stands on one line: a tick, a marker.
+ */
+@keyframes draw {
+  from {
+    clip-path: inset(-0.2em 100% -0.2em -0.2em);
+  }
+  to {
+    clip-path: inset(-0.2em);
+  }
+}
+
+/* A box ticked by this tap: the tick is drawn in the time the tap takes. */
+.tick-draw {
+  animation: draw var(--dur-fast) var(--ease-out);
+}
+
+/*
+ * The highlighter writes. Over what has only just been shown (the right answer in a verdict,
+ * the word that goes into a gap) it is drawn once, at the even pace of a marker over a word.
+ * A highlight that is part of a page, in a list or a table of forms, was always there.
+ *
+ * The yellow is drawn out as a layer of its own, line by line where an answer takes several:
+ * each line of the mark is a box to itself (hl clones them), and each fills from its own left
+ * edge. The letters are the marker's black, which the dark page does not show until the
+ * yellow is under them, so the word appears as the stroke passes. This is the one thing here
+ * that is painted rather than cut: a cut (clip-path) takes a mark of several lines for its
+ * first line alone and drops the rest until the end. Nothing is laid out for it either.
+ */
+.hl.hl-write {
+  background: linear-gradient(var(--mark), var(--mark)) 0 0 / 100% 100% no-repeat;
+  animation: write var(--dur-stroke) var(--ease-in-out);
+}
+
+@keyframes write {
+  from {
+    background-size: 0% 100%;
+  }
+}
+
+/* Where the highlighter is a stroke under a marker, which keeps its own colour, the cut does it: a marker never takes two lines. */
+.hl-under.hl-write {
+  animation: draw var(--dur-stroke) var(--ease-in-out);
+}
+
+/*
+ * A bar (ui.tsx, Fill). Its fill is as wide as its track, and cut off where its value ends:
+ * a new value moves the cut and nothing is laid out again. The cut is rounded by itself, so
+ * it does not lean on the track to clip it, which a moving layer can escape on an iPhone.
+ * --bar-ease is for the one bar that is a clock.
+ */
+.bar-fill {
+  clip-path: inset(0 calc(100% - var(--value, 0) * 100%) 0 0 round var(--bar-round, 99px));
+  transition: clip-path var(--dur-enter) var(--bar-ease, var(--ease-out));
+}
+
+@keyframes bar-in {
+  from {
+    clip-path: inset(0 100% 0 0 round var(--bar-round, 99px));
+  }
+}
+
+/* A right answer: the answer gives a small hop and confetti flies. Up quickly, down a little more slowly. */
+@keyframes pop {
+  30% {
+    transform: scale(1.04);
+  }
+}
+
+.pop {
+  animation: pop var(--dur-slow) var(--ease-out);
+}
+
+/* A wrong answer shakes its head: each turn smaller than the one before, and it is still. */
+@keyframes shake {
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(1.5px);
+  }
+}
+
+.shake {
+  animation: shake var(--dur-slow) var(--ease-in-out);
+}
+
+/*
+ * The verdict (ui.tsx) comes up from below while the answer hops or shakes: one gesture, on
+ * one clock, and all of it is still at the same moment. Whatever stands under the verdict to
+ * be tapped is in its place from the first frame.
+ */
+@keyframes verdict {
+  from {
+    opacity: 0;
+    transform: translateY(var(--shift));
+  }
+}
+
+.verdict {
+  animation: verdict var(--dur-slow) var(--ease-out);
+}
+
+/*
+ * A round is over (the summaries in BlitzSprint.tsx and Study.tsx): the app's second and last
+ * authored moment. The result comes in from the top down, each part (--i) half a beat after
+ * the one above it and the last no more than a fifth of a second after the first. Its bars
+ * fill as they come. The mascot has been watching: it blinks as it lands, the blink of the
+ * splash, and where it is content it shuts its eyes then, and does not arrive with them shut.
+ * The buttons at the foot are no part of this. They are there, and they work, from the start.
+ */
+.summary > * {
+  animation: rise var(--dur-enter) var(--ease-out) calc(var(--dur-fast) / 2 * var(--i, 0)) backwards;
+}
+
+.summary .bar-fill {
+  animation: bar-in var(--dur-slow) var(--ease-out) calc(var(--dur-fast) / 2 * var(--i, 0)) backwards;
+}
+
+.summary .mark-eye {
+  animation: splash-blink var(--dur-stroke) linear var(--dur-fast);
+}
+
+.summary .mark[data-eyes="closed"] .mark-eye {
+  animation: eyes-shut var(--dur-stroke) var(--ease-in-out) var(--dur-fast) backwards;
+}
+
+@keyframes eyes-shut {
+  from {
+    transform: scaleY(1);
+  }
+}
+
+/* Blitz: the button that shows the answer fills up while the learner thinks. */
+@keyframes fill {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+/*
+ * A cut that moves, as in a bar: nothing is laid out while the learner thinks. The fill has
+ * the button's own corners and is its full size, so it never leans on the button to clip it.
+ */
+.fill {
+  clip-path: inset(0);
+  animation: fill linear both;
+}
+
+/*
+ * Confetti (Cheer.tsx): thrown up and out, then left to fall. Two legs, each on its own
+ * curve, make the arc: quick off the mark and slowing to the top, then gathering speed down.
+ */
+@keyframes burst-piece {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0) scale(0.4);
+    animation-timing-function: cubic-bezier(0.12, 0.7, 0.3, 1);
+  }
+  36% {
+    transform: translate(calc(var(--dx) * 0.85), var(--dy)) rotate(calc(var(--turn) * 0.6)) scale(1);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.6);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), calc(var(--dy) + 64px)) rotate(var(--turn)) scale(1);
+  }
+}
+
+.burst-piece {
+  animation: burst-piece 0.85s linear forwards;
+}
+
+/*
+ * For those who have asked their phone for less motion: nothing travels, nothing is drawn and
+ * nothing is staged. A change of screen is a short fade, and so is a sheet, the next card and
+ * anything that takes another's place. The splash is the face standing still for a moment. An
+ * answer is told by its colour alone, a bar is simply at its value, and what is asked for is
+ * simply there. A press still gives under the finger: that is an answer, not a journey.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .pop,
+  .shake,
+  .settle,
+  details[open] > summary ~ *,
+  .verdict,
+  .tick-draw,
+  .hl.hl-write,
+  .hl-under.hl-write,
+  .sheet::before,
+  .sheet-panel,
+  .summary > *,
+  .summary .bar-fill,
+  .summary .mark-eye,
+  .summary .mark[data-eyes="closed"] .mark-eye {
+    animation: none;
+  }
+
+  .bar-fill {
+    transition: none;
+  }
+
+  .burst,
+  .fill,
+  .ghost,
+  .sheet-ghost,
+  .cross-out {
+    display: none;
+  }
+
+  /* A new screen fades in whole. Between tabs only the page does: the tab bar never left. */
+  #stage[data-nav="open"] > .app-shell,
+  #stage[data-nav="close"] > .app-shell,
+  #stage[data-nav="tab"] > .app-shell > main,
+  .onward,
+  .sheet {
+    animation: fade-in var(--dur-fast) linear;
+  }
+
+  .splash {
+    --splash-hold: 300ms;
+    animation:
+      splash-out-fade var(--dur-fast) linear var(--splash-leave) forwards,
+      splash-out-end 0s linear calc(var(--splash-leave) + var(--dur-fast)) forwards;
+  }
+
+  .splash-lid,
+  .splash-mark,
+  .splash-eyes {
+    animation: none;
+  }
+}
