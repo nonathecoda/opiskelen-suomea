@@ -11,6 +11,8 @@ export type VocabItem = {
   kind: WordKind;
   /** Only where the profile defines a marker for this kind: this word's value. */
   marker?: string;
+  /** The entry as the book's vocabulary prints it, shown on cards: "arvokas, arvokkaan", "estää (1), estän". */
+  head?: string;
   /** Key forms by id: { plural: "…" }. "-" means the word has no such form. */
   forms?: Record<string, string>;
   /** The book marks it as key vocabulary. */

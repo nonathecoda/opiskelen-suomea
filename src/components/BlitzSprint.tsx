@@ -248,7 +248,7 @@ function whyText(sprint: Sprint, turn: NonNullable<Sprint["current"]>, timeUp: b
 /** The side that is asked. */
 function Asked({ item, settings }: { item: BlitzItem; settings: BlitzSettings }) {
   if (settings.direction === "t2b") {
-    return <Target text={item.target} fit className={`${heroSize(item.target)} font-medium leading-tight`} />;
+    return <Target text={item.head} fit className={`${heroSize(item.head)} font-medium leading-tight`} />;
   }
   const long = item.meanings.some((meaning) => meaning.base.length > 30);
   return (
@@ -278,17 +278,7 @@ function Revealed({ item, settings }: { item: BlitzItem; settings: BlitzSettings
           ))}
         </ul>
       ) : (
-        <Target text={item.target} fit className={`${heroSize(item.target)} font-medium leading-tight`} />
-      )}
-      {item.forms.length > 0 && (
-        <p className="text-[16px] text-muted">
-          {item.forms.map((form, index) => (
-            <span key={form.label}>
-              {index > 0 && " · "}
-              {form.label}: <Target text={form.value} className="text-[19px] text-ink" />
-            </span>
-          ))}
-        </p>
+        <Target text={item.head} fit className={`${heroSize(item.head)} font-medium leading-tight`} />
       )}
       {item.also.length > 0 && (
         <p className="text-[16px] text-muted">
