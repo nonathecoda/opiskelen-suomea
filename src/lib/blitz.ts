@@ -1,5 +1,4 @@
 import { chapters } from "@/content";
-import { profile } from "@/content/profile";
 import type { VerbTable, VocabItem } from "@/content/types";
 import { CARD_BY_ID, shown } from "./cards";
 import { isKnown, marked, type Direction, type Mark, type Progress } from "./progress";
@@ -14,6 +13,8 @@ export type BlitzItem = {
   key: string;
   /** As shown, with its marker. */
   target: string;
+  /** As the book's vocabulary prints it: what the card shows. */
+  head: string;
   kind: BlitzKind;
   /** Chapters that list it, earliest first. */
   chapters: number[];
@@ -21,8 +22,6 @@ export type BlitzItem = {
   core: boolean;
   /** Every distinct meaning the book gives it. */
   meanings: Meaning[];
-  /** Key forms with `inList`. */
-  forms: { label: string; value: string }[];
   verb?: VerbTable;
   /** Other target text that answers the same question. */
   also: string[];
@@ -79,25 +78,16 @@ function buildItems(): BlitzItem[] {
       }
       meanings = listed.filter((item) => kept.has(item)).map((item) => ({ base: item.base, note: item.note, cue: item.cue }));
     }
-    const formsSeen = new Set<string>();
-    const forms: { label: string; value: string }[] = [];
-    for (const item of listed) {
-      for (const keyForm of profile.keyForms) {
-        const value = item.forms?.[keyForm.id];
-        if (!keyForm.inList || !value || value === "-" || formsSeen.has(keyForm.id)) continue;
-        formsSeen.add(keyForm.id);
-        forms.push({ label: keyForm.label, value });
-      }
-    }
+    const target = listed[0] ? shown(listed[0]) : verb!.inf;
     const ids = [...listed.map((item) => item.id), ...(verb ? [`${verb.id}-m`] : [])];
     return {
       key: found.key,
-      target: listed[0] ? shown(listed[0]) : verb!.inf,
+      target,
+      head: listed.find((item) => item.head)?.head ?? target,
       kind,
       chapters: [...found.chapters].sort((a, b) => a - b),
       core: !!verb || listed.some((item) => item.core),
       meanings,
-      forms,
       verb,
       also: [],
       ids,

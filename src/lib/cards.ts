@@ -35,6 +35,8 @@ export type Card = {
   /** Shown small with the answer. */
   note?: string;
   answer: string;
+  /** The answer as the book's vocabulary prints it, shown where the answer is only shown, never typed or chosen. */
+  head?: string;
   /** Everything that counts as right when typed. */
   accept: string[];
   /** Fixed choices, when the card brings its own. */
@@ -98,6 +100,7 @@ function build(): Card[] {
           cue: item.cue,
           note: item.note,
           answer,
+          head: item.head,
           accept: [answer, ...(item.alt ?? []).map((alt) => withMarker(alt, item))],
           writable: words(item.target) <= 5,
           reversible: true,

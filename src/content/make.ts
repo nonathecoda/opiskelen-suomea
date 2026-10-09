@@ -15,20 +15,23 @@ export function slug(text: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-type Extra = Pick<VocabItem, "cue" | "note" | "alt">;
+type Extra = Pick<VocabItem, "cue" | "note" | "alt" | "head">;
 
 /** An entry before it has its id. A verb also carries what its table needs. */
 export type Entry = Omit<VocabItem, "id"> & { verb?: { type: number; participle: string } };
 
 /** A noun: its genitive as the list prints it (written out in full) and its plural partitive ("-" when it has none). */
 export function n(target: string, base: string, gen: string | undefined, plPart: string, extra: Extra = {}): Entry {
-  return { target, base, kind: "noun", forms: forms(gen, plPart), ...extra };
+  return { target, base, kind: "noun", forms: forms(gen, plPart), head: headOf(target, gen), ...extra };
 }
 
 /** An adjective, with the same two forms. */
 export function a(target: string, base: string, gen: string | undefined, plPart: string, extra: Extra = {}): Entry {
-  return { target, base, kind: "adj", forms: forms(gen, plPart), ...extra };
+  return { target, base, kind: "adj", forms: forms(gen, plPart), head: headOf(target, gen), ...extra };
 }
+
+/** Nominative, then genitive, as the book's vocabulary lists them. */
+const headOf = (target: string, gen: string | undefined) => (gen ? `${target}, ${gen}` : undefined);
 
 function forms(gen: string | undefined, plPart: string): Record<string, string> {
   return gen ? { gen, plPart } : { plPart };
@@ -39,10 +42,10 @@ function forms(gen: string | undefined, plPart: string): Record<string, string> 
  * participle (lukenut): the four tables are built from it with the forms of olla.
  */
 export function v(target: string, base: string, type: number, first: string, participle: string, extra: Extra = {}): Entry {
-  return { target, base, kind: "verb", forms: { first }, verb: { type, participle }, ...extra };
+  return { target, base, kind: "verb", forms: { first }, head: `${target} (${type}), ${first}`, verb: { type, participle }, ...extra };
 }
 
-/** A word that does not change in the ways the app teaches: adverbs, and verbs the list gives without a minä-form. */
+/** A word that does not change in the ways the app teaches: adverbs, and verbs the list gives without a minä-form (`head` then as printed). */
 export function o(target: string, base: string, extra: Extra = {}): Entry {
   return { target, base, kind: "other", ...extra };
 }

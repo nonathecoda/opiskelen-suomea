@@ -134,7 +134,7 @@ export function ask(candidate: Candidate, direction: Direction, random: () => nu
     verb: candidate.verb,
     paradigm: candidate.paradigm,
     reversed,
-    prompt: reversed ? card.answer : card.prompt,
+    prompt: reversed ? card.head ?? card.answer : card.prompt,
     solution: reversed ? card.prompt : card.answer,
     choices: mode === "choose" ? choicesFor(card, reversed, random) : [],
   };
