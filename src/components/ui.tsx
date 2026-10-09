@@ -119,7 +119,7 @@ export function heroSize(text: string): string {
 
 
 /**
- * Target-language text: always in the serif and tagged with its language. A single word, or
+ * Target-language text: always in the display face and tagged with its language. A single word, or
  * `whole` text, stays on one line; `fit` sets a word too long for its line smaller (never under
  * 16px). `mark` highlights it, drawn in when `draw` is set.
  */
@@ -143,7 +143,7 @@ export function Target({
     <span
       lang={TARGET}
       ref={fit ? fitWord : undefined}
-      className={`font-serif ${oneLine ? "whitespace-nowrap" : ""} hyphens-none ${className}`}
+      className={`font-display ${oneLine ? "whitespace-nowrap" : ""} hyphens-none ${className}`}
     >
       {mark ? <span className={`hl ${draw ? "hl-write" : ""}`}>{text}</span> : text}
     </span>
@@ -154,7 +154,7 @@ export function Target({
 export function Gapped({ text, fill, still = false, className = "" }: { text: string; fill?: string; still?: boolean; className?: string }) {
   const [before, after = ""] = text.split(GAP);
   return (
-    <span lang={TARGET} className={`font-serif hyphens-none ${className}`}>
+    <span lang={TARGET} className={`font-display hyphens-none ${className}`}>
       {before}
       {fill === undefined ? (
         <span aria-label="gap" className="inline-block w-[2em] translate-y-[-0.15em] border-b-[3px] border-accent align-baseline" />
@@ -221,7 +221,7 @@ export function ParadigmTable({
             <span
               data-form
               lang={TARGET}
-              className="min-w-0 overflow-hidden whitespace-nowrap font-serif text-[18px] font-medium group-data-[stacked]/para:block group-data-[stacked]/para:overflow-visible group-data-[stacked]/para:text-[21px]"
+              className="min-w-0 overflow-hidden whitespace-nowrap font-display text-[18px] font-medium group-data-[stacked]/para:block group-data-[stacked]/para:overflow-visible group-data-[stacked]/para:text-[21px]"
             >
               {forms[slot]}
             </span>
@@ -232,12 +232,12 @@ export function ParadigmTable({
   );
 }
 
-/** A chapter's heading in a list: the book's label, then its title in the serif, on a rule. */
+/** A chapter's heading in a list: the book's label, then its title in the display face, on a rule. */
 export function ChapterHead({ label, title }: { label: string; title: string }) {
   return (
     <div className="border-b border-rule pb-1.5">
       <p className="text-[15px] text-muted">{label}</p>
-      <h2 lang={TARGET} className="font-serif text-[22px] font-semibold leading-tight">
+      <h2 lang={TARGET} className="font-display text-[22px] font-semibold leading-tight">
         {title}
       </h2>
     </div>

@@ -74,7 +74,7 @@ export function Splash() {
 }
 
 /**
- * The face as it is on the home-screen icon (Mark.tsx), in the app's own yellow and ink. The
+ * The face as it is on the home-screen icon (Mark.tsx), in the app's own Blurple and ink. The
  * eyes lie on a layer of their own (.splash-eyes), so they can close.
  */
 function Face() {

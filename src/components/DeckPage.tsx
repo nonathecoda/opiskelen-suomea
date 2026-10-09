@@ -72,7 +72,7 @@ export function DeckPage({ deck }: { deck: Deck }) {
       <main className="scroll-y flex-1 px-5 pb-8">
         <h1
           lang={deck.targetTitle ? profile.target.code : undefined}
-          className="font-serif text-[32px] font-semibold leading-tight"
+          className="headline text-[32px] leading-tight"
         >
           {deck.title}
         </h1>

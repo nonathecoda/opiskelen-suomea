@@ -2,7 +2,7 @@
 //  - the page is served from cache at once and refreshed in the background,
 //  - build files are cached forever (their names change when their content does),
 //  - a photo of a book page is kept once it has been looked at.
-const CACHE = "omasuomi-v1";
+const CACHE = "omasuomi-v2";
 const ASSET = /(?:\/_next\/)?static\/(?:chunks|css|media)\/[^"'\\\s)<>]+/g;
 
 /** Every build file a page refers to, as absolute paths. */

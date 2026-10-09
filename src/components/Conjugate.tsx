@@ -94,7 +94,7 @@ export function Conjugate({
                   spellCheck={false}
                   enterKeyHint={slot < cards.length - 1 ? "next" : "done"}
                   aria-label={spec.slots[slot]}
-                  className={`h-11 min-w-0 flex-1 rounded-xl border-2 bg-surface px-3 font-serif text-[19px] outline-none ${tone}`}
+                  className={`h-11 min-w-0 flex-1 rounded-xl border-2 bg-surface px-3 font-display text-[19px] outline-none ${tone}`}
                 />
               </label>
               {result && !(result.verdict.kind === "correct" && result.verdict.exact) && (

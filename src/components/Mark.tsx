@@ -57,7 +57,7 @@ export function Mark({ height = 40, eyes = "open", className = "" }: { height?: 
   );
 }
 
-/** The home-screen icon: the face on the yellow tile. */
+/** The home-screen icon: the face on the Blurple tile. */
 export function AppIcon({ size = 48, className = "" }: { size?: number; className?: string }) {
   return (
     <svg viewBox="0 0 512 512" width={size} height={size} aria-hidden="true" className={className}>

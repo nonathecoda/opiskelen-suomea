@@ -146,7 +146,7 @@ function Run({ settings, again }: { settings: BlitzSettings; again: () => void }
       <div ref={root} className="app-shell">
         <TopBar onClose={close} quiet />
         <main className="scroll-y flex-1 px-5 pt-10 text-center">
-          <h1 className="font-serif text-[32px] font-semibold">No cards</h1>
+          <h1 className="headline text-[32px] leading-tight">No cards</h1>
           <p className="mt-2 text-[16px] text-muted">Pick content and at least one chapter on the Blitz tab.</p>
         </main>
         <div className="pad-bottom px-5">
@@ -292,7 +292,7 @@ function Revealed({ item, settings }: { item: BlitzItem; settings: BlitzSettings
       )}
       {item.also.length > 0 && (
         <p className="text-[16px] text-muted">
-          Also: <span lang={profile.target.code} className="font-serif text-[19px] text-ink">{item.also.join(", ")}</span>
+          Also: <span lang={profile.target.code} className="font-display text-[19px] text-ink">{item.also.join(", ")}</span>
         </p>
       )}
       {notes.map((note) => (
@@ -338,7 +338,7 @@ function Summary({
       <TopBar onClose={close} quiet />
       <main className="summary scroll-y flex-1 px-5 pb-6">
         <div style={{ "--i": 0 } as CSSProperties} className="flex items-center gap-4">
-          <p className="flex-1 font-serif text-[56px] font-semibold leading-none tabular-nums">
+          <p className="flex-1 font-display text-[56px] font-semibold leading-none tabular-nums">
             {cards} <span className="text-[26px]">{cards === 1 ? "card" : "cards"}</span>
           </p>
           <Mark height={64} eyes={met ? "closed" : "open"} />

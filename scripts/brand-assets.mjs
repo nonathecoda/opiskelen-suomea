@@ -11,10 +11,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
-/** The app's paper in the dark theme (--bg in globals.css): what the launch screens are filled with. */
-const PAPER = "#151412";
-/** The brand yellow: what fills the corners of the Apple icon, which iOS rounds by itself. */
-const YELLOW = "#ffe000";
+/** The app's paper, Discord Black (--bg in globals.css): what the launch screens are filled with. */
+const PAPER = "#000000";
+/** Discord's Blurple, the tile's colour: what fills the corners of the Apple icon, which iOS rounds by itself. */
+const BLURPLE = "#5865f2";
 /** The tile on the launch screens in CSS pixels: the splash's --splash-size, 6rem at 16px (globals.css). */
 const TILE = 96;
 /** Apple's icon is always 180 by 180. */
@@ -89,7 +89,7 @@ for (const size of [192, 512]) {
   await write(`public/icons/icon-${size}.png`, raster(icon, size));
 }
 
-// The same on a full yellow square, with the mark inside Android's safe circle: Android cuts its own shape.
+// The same on a full Blurple square, with the mark inside Android's safe circle: Android cuts its own shape.
 for (const size of [192, 512]) {
   await write(`public/icons/icon-maskable-${size}.png`, raster(maskable, size).removeAlpha());
 }
@@ -100,8 +100,8 @@ await write("public/icons/icon-monochrome-512.png", raster(monochrome, 512));
 // iOS shows the whole square and rounds it itself, so this one has no corners and no alpha.
 // It is drawn from the icon rather than the maskable art: that one keeps its mark small for Android's
 // circle and would look lost here. The icon's own tile has the corner radius iOS uses, so the mark
-// sits the same in it. The corners are filled with yellow before they can show through.
-await write("src/app/apple-icon.png", raster(icon, APPLE_ICON).flatten({ background: YELLOW }));
+// sits the same in it. The corners are filled with Blurple before they can show through.
+await write("src/app/apple-icon.png", raster(icon, APPLE_ICON).flatten({ background: BLURPLE }));
 
 // Flat colour and a few edge tones: a palette of 256 holds it exactly and the files stay small.
 for (const device of DEVICES) {

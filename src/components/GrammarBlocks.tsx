@@ -20,7 +20,7 @@ export function GrammarBlocks({ topic }: { topic: GrammarTopic }) {
           <ul key={index} className="grid gap-2">
             {block.items.map((example, line) => (
               <li key={line}>
-                <span lang={TARGET} className="block font-serif text-[19px] font-medium leading-snug">
+                <span lang={TARGET} className="block font-display text-[19px] font-medium leading-snug">
                   {example.target}
                 </span>
                 <span className="block text-[15px] text-muted">{example.base}</span>
@@ -86,12 +86,12 @@ function Fitted({ table }: { table: Table }) {
 
 /**
  * How a cell of each kind is set and may be broken. The target-language forms are what the table
- * teaches: they stand in the serif, and the translation beside them steps back. The base language
+ * teaches: they stand in the display face, and the translation beside them steps back. The base language
  * is hyphenated when the table is.
  */
 const CELL: Record<TableColumn, string> = {
   // Kept a step under the body size, so that a table of four forms still fits a narrow phone whole.
-  target: "whitespace-nowrap hyphens-none font-serif text-[16px] font-medium",
+  target: "whitespace-nowrap hyphens-none font-display text-[16px] font-medium",
   text: "hyphens-none",
   base: "",
   gloss: "text-muted",

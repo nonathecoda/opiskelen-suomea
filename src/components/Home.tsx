@@ -111,11 +111,11 @@ function TabBar({ tab }: { tab: Tab }) {
   );
 }
 
-/** A tab's title in the serif, and a line about it. */
+/** A tab's title as a headline, and a line about it. */
 export function TabTitle({ title, children }: { title: string; children?: ReactNode }) {
   return (
     <header className="mb-5 pt-2">
-      <h1 className="font-serif text-[32px] font-semibold leading-tight">{title}</h1>
+      <h1 className="headline text-[32px] leading-tight">{title}</h1>
       {children && <p className="mt-1 text-[16px] text-muted">{children}</p>}
     </header>
   );
@@ -133,14 +133,14 @@ export function DeckRow({ deck, mark, plain = false }: { deck: Deck; mark?: Reac
         className="press-dim flex min-h-14 w-full items-center gap-3 border-b border-line py-2.5 text-left"
       >
         {mark !== undefined && (
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-edge font-serif text-[18px] font-semibold">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-edge font-display text-[18px] font-semibold">
             {mark}
           </span>
         )}
         <span className="min-w-0 flex-1">
           <span
             lang={deck.targetTitle ? profile.target.code : undefined}
-            className={`block leading-snug ${deck.targetTitle ? "font-serif text-[20px] font-medium" : "text-[16px] font-medium"}`}
+            className={`block leading-snug ${deck.targetTitle ? "font-display text-[20px] font-medium" : "text-[16px] font-medium"}`}
           >
             {deck.title}
           </span>
@@ -183,7 +183,7 @@ function ChaptersTab() {
       >
         <span className="flex items-center gap-3">
           <span className="flex-1">
-            <span className="block font-serif text-[26px] font-semibold leading-tight">Revise everything</span>
+            <span className="block font-display text-[26px] font-semibold leading-tight">Revise everything</span>
             <span className="mt-0.5 block text-[16px]">Words, phrases, verbs and grammar mixed</span>
           </span>
           <span aria-hidden="true">{MIXED}</span>

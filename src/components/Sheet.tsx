@@ -84,7 +84,7 @@ export function Sheet({
           >
             <Icon>{GLYPH.close}</Icon>
           </button>
-          <h2 className="pt-1.5 font-serif text-[24px] font-semibold leading-tight">{title}</h2>
+          <h2 className="pt-1.5 font-display text-[24px] font-semibold leading-tight">{title}</h2>
           {detail && <p className="mt-0.5 text-[15px] text-muted">{detail}</p>}
         </div>
         {children}

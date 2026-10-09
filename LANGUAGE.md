@@ -92,4 +92,4 @@ four tables. Everything else has no forms sheet.
 **Key vocabulary.** The book does not mark key words, so `core` is never set and the "Key words
 only" chip does not appear; verbs alone count as key in the Blitz.
 
-**Fonts.** Instrument Sans and Newsreader both cover Finnish.
+**Fonts.** Noto Sans and Montserrat (Discord's backup typefaces) both cover Finnish.

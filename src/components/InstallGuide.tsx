@@ -92,7 +92,7 @@ function InstallGuide({ phone, onClose }: { phone: Phone; onClose: () => void })
         <main className="scroll-y pad-top flex-1 px-5 pb-6">
           <div className="mt-6 flex flex-col items-center text-center">
             <AppIcon size={88} />
-            <h1 className="mt-4 font-serif text-[30px] font-semibold leading-tight">Add {APP} to the Home Screen</h1>
+            <h1 className="headline mt-4 text-[30px] leading-tight">Add {APP} to the Home Screen</h1>
             <p className="mt-2 text-[16px] text-muted">Works like an app, without the app store.</p>
           </div>
           <ul className="mt-6 grid gap-2">

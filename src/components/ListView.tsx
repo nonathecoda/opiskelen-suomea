@@ -66,7 +66,7 @@ export function WordRow({
             <Target text={shown(item)} whole={item.kind !== "phrase" && item.target.split(" ").length < 3} className={`text-[19px] ${item.core ? "font-bold" : "font-medium"}`} />
           )}
           {listed.length > 0 && (
-            <span lang={profile.target.code} className="block font-serif text-[16px] text-muted">
+            <span lang={profile.target.code} className="block font-display text-[16px] text-muted">
               {listed.join(", ")}
             </span>
           )}
@@ -141,7 +141,7 @@ export function ListView({ deck, weakOnly = false }: { deck: Deck; weakOnly?: bo
         )}
         {parts.map(({ chapter, groups, verbs, topics }) => (
           <section key={chapter.id} className="mt-8">
-            <h2 className="font-serif text-[26px] font-semibold leading-tight">
+            <h2 className="font-display text-[26px] font-semibold leading-tight">
               <span className="text-muted">{chapter.id}</span>{" "}
               <span lang={profile.target.code}>{chapter.title}</span>
             </h2>

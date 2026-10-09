@@ -41,7 +41,7 @@ export function FormsSheet({ item, hideMeaning = false, onClose }: { item: Vocab
                     {row.cells.map((cell) => {
                       const [kept, changed] = splitForm(item.target, cell);
                       return (
-                        <span key={cell} lang={TARGET} className="whitespace-nowrap font-serif text-[19px]">
+                        <span key={cell} lang={TARGET} className="whitespace-nowrap font-display text-[19px]">
                           {kept}
                           {changed && <span className="hl">{changed}</span>}
                         </span>

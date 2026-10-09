@@ -3,41 +3,43 @@
 :root {
   /* One theme, the dark one: a page read at night. Nothing here follows the system's light mode. */
   color-scheme: dark;
-  /* Paper and ink. The paper is the one the launch screens are printed on (scripts/brand-assets.mjs). */
-  --bg: #151412;
-  /* Raised a step: fields, buttons, the bars at the foot of a screen. */
-  --surface: #201e1b;
-  /* Warm white, 16:1 on the paper. Pure white would glare on it. */
-  --ink: #f5f1e8;
-  /* Secondary text: 8.7:1 on the paper, 7.9:1 on the raised surface. It never stands on a filled line. */
-  --muted: #b9b2a4;
+  /* Discord's brand palette (brand guidelines, Colors). Every named colour is theirs; the
+     three greys between ink and paper are Light Blurple taken toward black, as solid colours,
+     since the guidelines rule out colour in opacity. */
+  /* Paper and ink. The paper is Black, the one the launch screens are printed on (scripts/brand-assets.mjs). */
+  --bg: #000000;
+  /* Raised a step: fields, buttons, the bars at the foot of a screen. Discord's Dark. */
+  --surface: #1f1f1f;
+  /* Light Blurple: 16.6:1 on the paper, 13:1 on the raised surface. */
+  --ink: #e0e3ff;
+  /* Secondary text: 9.9:1 on the paper, 7.8:1 on the raised surface. It never stands on a filled line. */
+  --muted: #afb1c7;
   /* Three weights of line. --line parts one row from the next, --edge draws a control that
-     can be tapped (3.9:1 on the paper, 3.5:1 on the surface), --rule opens a section. */
-  --line: #37332c;
-  --edge: #7a7365;
-  --rule: #9a9384;
-  /* The one yellow: the icon's own (Mark.tsx, brand/). The next thing to do, the current tab,
-     progress. 14:1 on the paper, and brand black is 14:1 on it. */
-  --accent: #ffe000;
-  --accent-press: #e6ca00;
-  --accent-ink: #111111;
+     can be tapped (4.4:1 on the paper, 3.5:1 on the surface), --rule opens a section. */
+  --line: #313238;
+  --edge: #707280;
+  --rule: #8b8d9e;
+  /* The one Blurple: the icon's own (Mark.tsx, brand/). The next thing to do, the current tab,
+     progress. Black on Blurple and Blurple on Black are core pairings, 4.6:1 either way. */
+  --accent: #5865f2;
+  --accent-press: #4752c4;
+  --accent-ink: #000000;
   /* The highlighter. On a dark page it cannot be a wash under light letters, which would dim
-     them: it is the yellow itself, with the letters in black on it. */
+     them: it is the Blurple itself, with the letters in black on it. */
   --mark: var(--accent);
   --mark-ink: var(--accent-ink);
   /* The text cursor: the highlighter again. */
   --caret: var(--accent);
-  /* Right and wrong. Each is bright enough to be read as text on the paper (7:1 and more)
-     and to carry black text as a band (8:1 and more), so there is one green and one red. */
-  --good: #49de78;
-  --bad: #ff8b75;
-  /* Tag colours: kept for the profile's marker, a class of words worth telling apart by colour,
-     and thrown by the confetti. Blue, pink and blue-green, each
-     7.6:1 or more even on the raised surface, and set as far from each other, from the yellow
-     and from the green and red of a verdict as three such colours can be. */
-  --tag-1: #8daffe;
-  --tag-2: #fe8acf;
-  --tag-3: #4ae6d6;
+  /* Right and wrong: the secondary palette's Green and Pink. Green on Black, Pink on Black
+     and black on each are its approved pairings: 13.6:1 and 7.2:1. */
+  --good: #35ed7e;
+  --bad: #ff4cd2;
+  /* Tag colours, thrown by the confetti with the Blurple and the Green: the secondary
+     palette's light row (Light Blurple, Light Green, Light Pink), 11:1 or more even on the
+     raised surface. */
+  --tag-1: #e0e3ff;
+  --tag-2: #c8ffef;
+  --tag-3: #f5c9ff;
 }
 
 @theme inline {
@@ -56,8 +58,9 @@
   --color-tag-1: var(--tag-1);
   --color-tag-2: var(--tag-2);
   --color-tag-3: var(--tag-3);
+  /* Discord's backup typefaces (brand guidelines, Typography): Ginto Discord is theirs alone. */
   --font-sans: var(--font-ui), system-ui, sans-serif;
-  --font-serif: var(--font-word), Georgia, serif;
+  --font-display: var(--font-word), system-ui, sans-serif;
 }
 
 /* Native feel on phones: no tap flash, no pull-to-refresh, no rubber-band reload. */
@@ -113,7 +116,7 @@ button {
     outline-offset: 2px;
   }
 
-  /* The parts the browser draws carry the same ink and the same yellow. */
+  /* The parts the browser draws carry the same ink and the same Blurple. */
   :root {
     accent-color: var(--accent);
     scrollbar-color: var(--edge) transparent;
@@ -130,6 +133,14 @@ button {
   }
 }
 
+/* A screen's title, as Discord sets a headline: the display face at its heaviest, all caps, tracked -3%. */
+@utility headline {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+}
+
 /* A text link: ink with a firm underline, so it reads as something to tap. */
 @utility link {
   text-decoration-line: underline;
@@ -143,8 +154,7 @@ button {
   background: var(--mark);
   color: var(--mark-ink);
   border-radius: 3px;
-  /* A little more on the right: the serif's f and r reach past their own width. */
-  padding-inline: 0.12em 0.18em;
+  padding-inline: 0.15em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
@@ -233,7 +243,7 @@ button {
      what is pressed, gives   at once, and eases back
 
    Transform, opacity and clip-path do it, so nothing is laid out again and a busy phone
-   keeps time (the one exception, the highlighter's yellow, says why; it lays nothing out
+   keeps time (the one exception, the highlighter's Blurple, says why; it lays nothing out
    either). There are two pieces of theatre: the splash, and the small moment when a round
    is over and its result comes in. Everything else stays quiet.
    ══════════════════════════════════════════════════════════════════════════════════════ */
@@ -629,10 +639,10 @@ details[open] > summary ~ * {
  * the word that goes into a gap) it is drawn once, at the even pace of a marker over a word.
  * A highlight that is part of a page, in a list or a table of forms, was always there.
  *
- * The yellow is drawn out as a layer of its own, line by line where an answer takes several:
+ * The Blurple is drawn out as a layer of its own, line by line where an answer takes several:
  * each line of the mark is a box to itself (hl clones them), and each fills from its own left
  * edge. The letters are the marker's black, which the dark page does not show until the
- * yellow is under them, so the word appears as the stroke passes. This is the one thing here
+ * Blurple is under them, so the word appears as the stroke passes. This is the one thing here
  * that is painted rather than cut: a cut (clip-path) takes a mark of several lines for its
  * first line alone and drops the rest until the end. Nothing is laid out for it either.
  */

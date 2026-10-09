@@ -246,7 +246,7 @@ export function BlitzStart() {
         className="press flex h-16 w-full items-center gap-3 rounded-2xl bg-accent px-5 text-left text-accent-ink active:bg-accent-press disabled:bg-surface disabled:text-muted disabled:ring-1 disabled:ring-inset disabled:ring-line"
       >
         <span className="min-w-0 flex-1">
-          <span className="block font-serif text-[24px] font-semibold leading-tight">{missing ?? "Start blitz"}</span>
+          <span className="block font-display text-[24px] font-semibold leading-tight">{missing ?? "Start blitz"}</span>
           {!missing && (
             <span className="block text-[15px] leading-tight">
               {settings.minutes} min · {directionLabel(settings.direction)}

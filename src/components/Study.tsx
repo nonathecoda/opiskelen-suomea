@@ -143,7 +143,7 @@ export function Study({ deck, exercises }: { deck: Deck; exercises: Exercise[] }
       <div ref={root} className="app-shell">
         <TopBar onClose={close} quiet />
         <main className="scroll-y flex-1 px-5 pt-10 text-center">
-          <h1 className="font-serif text-[32px] font-semibold">Nothing to practise</h1>
+          <h1 className="headline text-[32px] leading-tight">Nothing to practise</h1>
           <p className="mt-2 text-[16px] text-muted">This selection has nothing for this exercise.</p>
         </main>
         <div className="pad-bottom px-5">
@@ -289,7 +289,7 @@ function Prompt({ question, answered }: { question: Question; answered: Answered
         <p className="mt-2 text-[15px] text-muted">
           {card.hint && (
             <>
-              (<span lang={TARGET} className="font-serif text-[17px]">{card.hint}</span>){" "}
+              (<span lang={TARGET} className="font-display text-[17px]">{card.hint}</span>){" "}
             </>
           )}
           {card.cue}
@@ -448,7 +448,7 @@ export function SpecialKeys({ target }: { target: () => HTMLInputElement | null 
             input.dispatchEvent(new Event("input", { bubbles: true }));
             input.focus({ preventScroll: true });
           }}
-          className="press h-11 min-w-11 rounded-xl border border-edge bg-surface px-3 font-serif text-[20px] active:bg-line"
+          className="press h-11 min-w-11 rounded-xl border border-edge bg-surface px-3 font-display text-[20px] active:bg-line"
           lang={TARGET}
         >
           {key}
@@ -501,7 +501,7 @@ function Write({
         spellCheck={false}
         enterKeyHint={answered ? "next" : "done"}
         aria-label="Your answer"
-        className={`h-16 w-full rounded-2xl border-2 bg-surface px-4 font-serif text-[26px] outline-none ${tone}`}
+        className={`h-16 w-full rounded-2xl border-2 bg-surface px-4 font-display text-[26px] outline-none ${tone}`}
       />
       <SpecialKeys target={() => field.current} />
       {verdict?.kind === "correct" && (
@@ -557,11 +557,11 @@ function Summary({
     <div ref={root} className="app-shell">
       <TopBar onClose={close} quiet />
       <main className="summary scroll-y flex-1 px-5 pb-6">
-        <h1 style={{ "--i": 0 } as CSSProperties} className="font-serif text-[32px] font-semibold">
+        <h1 style={{ "--i": 0 } as CSSProperties} className="headline text-[32px] leading-tight">
           Round done
         </h1>
         <div style={{ "--i": 1 } as CSSProperties} className="mt-3 flex items-center gap-4">
-          <p className="font-serif text-[56px] font-semibold leading-none tabular-nums">
+          <p className="font-display text-[56px] font-semibold leading-none tabular-nums">
             {right}/{total}
           </p>
           <Mark height={64} eyes={clean ? "closed" : "open"} />

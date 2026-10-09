@@ -1,16 +1,16 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Sans, Newsreader } from "next/font/google";
+import { Montserrat, Noto_Sans } from "next/font/google";
 import { ServiceWorker } from "@/components/ServiceWorker";
 import { Splash } from "@/components/Splash";
 import { ViewportSync } from "@/components/ViewportSync";
 import "./globals.css";
 
-const ui = Instrument_Sans({
+const ui = Noto_Sans({
   variable: "--font-ui",
   subsets: ["latin"],
 });
 
-const word = Newsreader({
+const word = Montserrat({
   variable: "--font-word",
   subsets: ["latin"],
 });
@@ -67,7 +67,7 @@ export const viewport: Viewport = {
   viewportFit: "cover",
   // Android: let the on-screen keyboard shrink the page so the bottom buttons stay in view.
   interactiveWidget: "resizes-content",
-  themeColor: "#151412",
+  themeColor: "#000000",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
