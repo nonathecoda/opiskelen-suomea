@@ -22,7 +22,7 @@ import { close } from "@/lib/nav";
 import { progressStore, setMarks, type Mark as Marks } from "@/lib/progress";
 import { Coverage, GoalLine, directionLabel, useGoal } from "./Blitz";
 import { Mark } from "./Mark";
-import { Fill, Icon, Label, ParadigmTable, PrimaryButton, QuietButton, Target, TopBar, heroSize } from "./ui";
+import { Fill, Icon, Label, PrimaryButton, QuietButton, Target, TopBar, heroSize } from "./ui";
 
 const TICK_MS = 250;
 
@@ -248,7 +248,7 @@ function whyText(sprint: Sprint, turn: NonNullable<Sprint["current"]>, timeUp: b
 /** The side that is asked. */
 function Asked({ item, settings }: { item: BlitzItem; settings: BlitzSettings }) {
   if (settings.direction === "t2b") {
-    return <Target text={item.head} fit className={`${heroSize(item.head)} font-medium leading-tight`} />;
+    return <Target text={item.target} fit className={`${heroSize(item.target)} font-medium leading-tight`} />;
   }
   const long = item.meanings.some((meaning) => meaning.base.length > 30);
   return (
@@ -263,20 +263,23 @@ function Asked({ item, settings }: { item: BlitzItem; settings: BlitzSettings })
   );
 }
 
-/** The other side, with the forms, alternatives and notes, and a verb's table. */
+/** The other side: the meaning with the word as the book's vocabulary prints it, or that word, then alternatives and notes. */
 function Revealed({ item, settings }: { item: BlitzItem; settings: BlitzSettings }) {
   const notes = [...new Set(item.meanings.map((meaning) => meaning.note).filter((note): note is string => !!note))];
   return (
     <div className="grid gap-3">
       {settings.direction === "t2b" ? (
-        <ul className="grid gap-1">
-          {item.meanings.map((meaning, index) => (
-            <li key={index} className="text-[22px] leading-snug">
-              {meaning.base}
-              {meaning.cue && <span className="block text-[15px] text-muted">{meaning.cue}</span>}
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="grid gap-1">
+            {item.meanings.map((meaning, index) => (
+              <li key={index} className="text-[22px] leading-snug">
+                {meaning.base}
+                {meaning.cue && <span className="block text-[15px] text-muted">{meaning.cue}</span>}
+              </li>
+            ))}
+          </ul>
+          {item.head !== item.target && <Target text={item.head} className="text-[19px]" />}
+        </>
       ) : (
         <Target text={item.head} fit className={`${heroSize(item.head)} font-medium leading-tight`} />
       )}
@@ -290,12 +293,6 @@ function Revealed({ item, settings }: { item: BlitzItem; settings: BlitzSettings
           {note}
         </p>
       ))}
-      {item.verb && (
-        <div className="mt-1">
-          <ParadigmTable verb={item.verb} paradigm={profile.paradigms[0].id} title={profile.paradigms[0].label} />
-          {item.verb.note && <p className="mt-2 text-[15px] text-muted">{item.verb.note}</p>}
-        </div>
-      )}
     </div>
   );
 }

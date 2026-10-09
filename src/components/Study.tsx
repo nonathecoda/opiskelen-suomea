@@ -382,7 +382,10 @@ function FlashCard({ question, shown, onTurn }: { question: Question; shown: boo
           {targetAnswer(question) ? (
             <Target text={question.card.head ?? question.solution} fit className={`${heroSize(question.card.head ?? question.solution)} block font-medium leading-tight`} />
           ) : (
-            <p className="text-[26px] leading-snug">{question.solution}</p>
+            <>
+              <p className="text-[26px] leading-snug">{question.solution}</p>
+              {question.card.head && <Target text={question.card.head} className="mt-1 block text-[19px]" />}
+            </>
           )}
           {question.card.note && <p className="mt-2 text-[15px] text-muted">{question.card.note}</p>}
         </div>
